@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор виконання плану ВТМ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="allbody">
+            <h1>Калькулятор виконання плану ВТМ</h1>
+            <label for="plan">Введіть план (грн):</label>
+            <input type="number" id="plan" placeholder="План" />
+            <label for="fact">Введіть факт (грн):</label>
+            <input type="number" id="fact" placeholder="Факт" />
+            <button onclick="calculateVTM()" class="interactive">Розрахувати</button>
+            <!-- Кнопка перехода на первую страницу -->
+            <button onclick="window.location.href='index.html'" class="interactive">Перейти на калькулятор ТО</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для отображения результатов -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Результати:</h3>
+            <p id="modalResult100"></p>
+            <p id="modalResult98"></p>
+            <p id="modalDaysWithToday"></p>
+            <p id="modalDaysWithoutToday"></p>
+            <p id="modalCurrentPercentage"></p>
+
+            <!-- Кнопки поділитися -->
+            <div class="share-buttons">
+                <p class="share-text">Поділитись:</p>
+                <div class="share-icons">
+                    <a id="share-viber" class="share-btn viber" href="#" target="_blank" aria-label="Поділитися через Viber">
+                        <img src="icons/viber.svg" alt="Viber">
+                    </a>
+                    <a id="share-telegram" class="share-btn telegram" href="#" target="_blank" aria-label="Поділитися через Telegram">
+                        <img src="icons/telegram.svg" alt="Telegram">
+                    </a>
+                    <a id="share-whatsapp" class="share-btn whatsapp" href="#" target="_blank" aria-label="Поділитися через WhatsApp">
+                        <img src="icons/whatsapp.svg" alt="WhatsApp">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function safeDivide(numerator, denominator) {
+            return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
+        }
+
+        function formatCurrency(value) {
+            return value >= 1e6 ? (value / 1e6).toFixed(2) + 'M' : (value / 1e3).toFixed(2) + 'K';
+        }
+
+        function formatForViber(text) {
+            return encodeURIComponent(text);
+        }
+
+        function calculateVTM() {
+            const plan = parseFloat(document.getElementById('plan').value);
+            const fact = parseFloat(document.getElementById('fact').value);
+
+            if (isNaN(plan) || isNaN(fact)) {
+                alert("Будь ласка, введіть правильне число");
+                return;
+            }
+
+            const remaining100 = Math.max(0, plan - fact);
+            const remaining98 = Math.max(0, (plan * 0.98) - fact);
+
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const daysLeftIncludingToday = daysInMonth - today.getDate() + 1;
+            const daysLeftExcludingToday = daysInMonth - today.getDate();
+
+            const currentPercentage = plan === 0 ? 0 : ((fact / plan) * 100).toFixed(2);
+
+            // Сокращение текста для мессенджеров
+            const resultText = `ВТМ:\n` +
+                `До 100%: ${formatCurrency(remaining100)} грн.\n` +
+                `До 98%: ${formatCurrency(remaining98)} грн.\n` +
+                `На день (з урах. сьог.): 98% - ${safeDivide(remaining98, daysLeftIncludingToday)} грн., 100% - ${safeDivide(remaining100, daysLeftIncludingToday)} грн.\n` +
+                `На день (без сьог.): 98% - ${safeDivide(remaining98, daysLeftExcludingToday)} грн., 100% - ${safeDivide(remaining100, daysLeftExcludingToday)} грн.\n` +
+                `Вик.: ${currentPercentage}%`;
+
+            document.getElementById('modalResult100').textContent = `Залишилось до 100%: ${formatCurrency(remaining100)} грн.`;
+            document.getElementById('modalResult98').textContent = `Залишилось до 98%: ${formatCurrency(remaining98)} грн.`;
+
+            document.getElementById('modalDaysWithToday').textContent = `Сума на день (з урахуванням сьогоднішнього дня): 98% - ${safeDivide(remaining98, daysLeftIncludingToday)} грн. / 100% - ${safeDivide(remaining100, daysLeftIncludingToday)} грн.`;
+            document.getElementById('modalDaysWithoutToday').textContent = `Сума на день (без урахування сьогоднішнього дня): 98% - ${safeDivide(remaining98, daysLeftExcludingToday)} грн. / 100% - ${safeDivide(remaining100, daysLeftExcludingToday)} грн.`;
+
+            document.getElementById('modalCurrentPercentage').textContent = `Виконання плану: ${currentPercentage}%`;
+
+            // Обновление ссылок для поделиться
+            document.getElementById('share-viber').href = `viber://forward?text=${formatForViber(resultText)}`;
+            document.getElementById('share-telegram').href = `https://t.me/share/url?url=${encodeURIComponent(resultText)}`;
+            document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(resultText)}`;
+
+            document.getElementById('resultModal').style.display = "block";
+        }
+
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('resultModal').style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('resultModal')) {
+                document.getElementById('resultModal').style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>
