@@ -37,7 +37,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -91,9 +90,14 @@
             const modalContent = document.getElementById('modalContent');
 
             html2canvas(modalContent).then(canvas => {
-                canvas.toBlob(function(blob) {
-                    saveAs(blob, 'result.png'); // Используем FileSaver.js для скачивания
-                }, 'image/png');
+                const dataURL = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = dataURL;
+                a.download = 'result.png';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }).catch(function(error) {
                 console.error('Ошибка при создании скриншота:', error);
             });
