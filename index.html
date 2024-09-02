@@ -16,12 +16,10 @@
             <label for="fact">Введіть факт (грн):</label>
             <input type="number" id="fact" placeholder="Факт" />
             <button onclick="calculateTO()" class="interactive">Розрахувати</button>
-            <!-- Кнопка перехода на калькулятор ВТМ -->
             <button onclick="window.location.href='vtm_calculator.html'" class="interactive">Перейти на калькулятор ВТМ</button>
         </div>
     </div>
 
-    <!-- Модальное окно для отображения результатов -->
     <div id="resultModal" class="modal">
         <div class="modal-content" id="modalContent">
             <span class="close">&times;</span>
@@ -31,8 +29,6 @@
             <p id="modalDaysWithToday"></p>
             <p id="modalDaysWithoutToday"></p>
             <p id="modalCurrentPercentage"></p>
-
-            <!-- Кнопка для скачивания изображения -->
             <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
@@ -43,7 +39,7 @@
         }
 
         function formatCurrency(value) {
-            return value.toFixed(2); // Убираем сокращения и отображаем полное значение с двумя знаками после запятой
+            return value.toFixed(2);
         }
 
         function calculateTO() {
@@ -95,10 +91,7 @@
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = 'result.png';
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
                     a.click();
-                    document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                 })
                 .catch(function(error) {
