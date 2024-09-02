@@ -37,6 +37,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -95,28 +96,18 @@
             closeButton.style.display = 'none';
             downloadButton.style.display = 'none';
 
-            // Изменяем фон модального окна
-            modalContent.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
-            modalContent.style.backgroundPosition = 'bottom';
-            modalContent.style.backgroundSize = 'cover';
-
             html2canvas(modalContent).then(canvas => {
-                // Восстанавливаем кнопки и фон после создания изображения
+                // Восстанавливаем кнопки после создания изображения
                 closeButton.style.display = 'block';
                 downloadButton.style.display = 'block';
-                modalContent.style.backgroundImage = 'none';
 
                 canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'result.png';
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 'image/png', 1.0).catch(function(error) {
+                    if (blob) {
+                        saveAs(blob, 'result.png'); // Используем FileSaver.js для скачивания
+                    } else {
+                        console.error('Ошибка при создании изображения');
+                    }
+                }, 'image/png').catch(function(error) {
                     console.error('Ошибка при создании изображения:', error);
                 });
             }).catch(function(error) {
