@@ -22,7 +22,7 @@
 
     <!-- Модальное окно для отображения результатов -->
     <div id="resultModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" id="modalContent">
             <span class="close">&times;</span>
             <h3>Результати:</h3>
             <p id="modalResult100"></p>
@@ -31,24 +31,12 @@
             <p id="modalDaysWithoutToday"></p>
             <p id="modalCurrentPercentage"></p>
 
-            <!-- Кнопки поділитися -->
-            <div class="share-buttons">
-                <p class="share-text">Поділитись:</p>
-                <div class="share-icons">
-                    <a id="share-viber" class="share-btn viber" href="#" target="_blank" aria-label="Поділитися через Viber">
-                        <img src="icons/viber.svg" alt="Viber">
-                    </a>
-                    <a id="share-telegram" class="share-btn telegram" href="#" target="_blank" aria-label="Поділитися через Telegram">
-                        <img src="icons/telegram.svg" alt="Telegram">
-                    </a>
-                    <a id="share-whatsapp" class="share-btn whatsapp" href="#" target="_blank" aria-label="Поділитися через WhatsApp">
-                        <img src="icons/whatsapp.svg" alt="WhatsApp">
-                    </a>
-                </div>
-            </div>
+            <!-- Кнопка для скачивания изображения -->
+            <button onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -56,10 +44,6 @@
 
         function formatCurrency(value) {
             return value >= 1e6 ? (value / 1e6).toFixed(2) + 'M' : (value / 1e3).toFixed(2) + 'K';
-        }
-
-        function formatForViber(text) {
-            return encodeURIComponent(text);
         }
 
         function calculateTO() {
@@ -81,14 +65,6 @@
 
             const currentPercentage = plan === 0 ? 0 : ((fact / plan) * 100).toFixed(2);
 
-            // Сокращение текста для мессенджеров
-            const resultText = `ТО:\n` +
-                `100%: - ${formatCurrency(remaining100)} грн.\n` +
-                `95%: - ${formatCurrency(remaining95)} грн.\n` +
-                `День (з урах. сьог.): 95% - ${safeDivide(remaining95, daysLeftIncludingToday)} грн., 100% - ${safeDivide(remaining100, daysLeftIncludingToday)} грн.\n` +
-                `День (без сьог.): 95% - ${safeDivide(remaining95, daysLeftExcludingToday)} грн., 100% - ${safeDivide(remaining100, daysLeftExcludingToday)} грн.\n` +
-                `Вик.: ${currentPercentage}%`;
-
             document.getElementById('modalResult100').textContent = `Залишилось до 100%: ${formatCurrency(remaining100)} грн.`;
             document.getElementById('modalResult95').textContent = `Залишилось до 95%: ${formatCurrency(remaining95)} грн.`;
 
@@ -96,11 +72,6 @@
             document.getElementById('modalDaysWithoutToday').textContent = `Сума на день (без урахування сьогоднішнього дня): 95% - ${safeDivide(remaining95, daysLeftExcludingToday)} грн. / 100% - ${safeDivide(remaining100, daysLeftExcludingToday)} грн.`;
 
             document.getElementById('modalCurrentPercentage').textContent = `Виконання плану: ${currentPercentage}%`;
-
-            // Обновление ссылок для поделиться
-            document.getElementById('share-viber').href = `viber://forward?text=${formatForViber(resultText)}`;
-            document.getElementById('share-telegram').href = `https://t.me/share/url?url=${encodeURIComponent(resultText)}`;
-            document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(resultText)}`;
 
             document.getElementById('resultModal').style.display = "block";
         }
@@ -114,6 +85,17 @@
                 document.getElementById('resultModal').style.display = "none";
             }
         };
+
+        function downloadModalImage() {
+            const modalContent = document.getElementById('modalContent');
+
+            html2canvas(modalContent).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'result.png';
+                link.click();
+            });
+        }
     </script>
 </body>
 </html>
