@@ -100,7 +100,7 @@
             modalContent.style.backgroundPosition = 'bottom';
             modalContent.style.backgroundSize = 'cover';
 
-            html2canvas(modalContent).then(canvas => {
+            html2canvas(modalContent, { useCORS: true }).then(canvas => {
                 // Восстанавливаем кнопки и фон после создания изображения
                 closeButton.style.display = 'block';
                 downloadButton.style.display = 'block';
@@ -115,7 +115,11 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                }, 'image/png');
+                }, 'image/png').catch(function(error) {
+                    console.error('Ошибка при создании изображения:', error);
+                });
+            }).catch(function(error) {
+                console.error('Ошибка при создании скриншота:', error);
             });
         }
     </script>

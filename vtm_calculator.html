@@ -111,11 +111,16 @@
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = 'result.png';
+                    a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                }, 'image/png');
+                }, 'image/png', 1.0).catch(function(error) {
+                    console.error('Ошибка при создании изображения:', error);
+                });
+            }).catch(function(error) {
+                console.error('Ошибка при создании скриншота:', error);
             });
         }
     </script>
