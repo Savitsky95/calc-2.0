@@ -32,10 +32,12 @@
             <p id="modalCurrentPercentage"></p>
 
             <!-- Кнопка для скачивания изображения -->
-            <button id="downloadBtn" onclick="downloadImage()" class="interactive">Завантажити зображення</button>
+            <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -85,17 +87,16 @@
             }
         };
 
-        function downloadImage() {
+        function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
-            const dataUrl = 'data:image/png;base64,' + btoa(
-                unescape(encodeURIComponent(modalContent.innerHTML))
-            );
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = 'result.png';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+
+            html2canvas(modalContent).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    saveAs(blob, 'result.png'); // Используем FileSaver.js для скачивания
+                }, 'image/png');
+            }).catch(function(error) {
+                console.error('Ошибка при создании скриншота:', error);
+            });
         }
     </script>
 </body>
