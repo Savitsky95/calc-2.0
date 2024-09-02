@@ -32,7 +32,7 @@
             <p id="modalCurrentPercentage"></p>
 
             <!-- Кнопка для скачивания изображения -->
-            <button onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
+            <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
@@ -88,8 +88,24 @@
 
         function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
+            const closeButton = document.querySelector('.close');
+            const downloadButton = document.getElementById('downloadBtn');
+
+            // Скрываем кнопки перед созданием изображения
+            closeButton.style.display = 'none';
+            downloadButton.style.display = 'none';
+
+            // Изменяем фон модального окна
+            modalContent.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
+            modalContent.style.backgroundPosition = 'bottom';
+            modalContent.style.backgroundSize = 'cover';
 
             html2canvas(modalContent).then(canvas => {
+                // Восстанавливаем кнопки и фон после создания изображения
+                closeButton.style.display = 'block';
+                downloadButton.style.display = 'block';
+                modalContent.style.backgroundImage = 'none';
+
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 link.download = 'result.png';
