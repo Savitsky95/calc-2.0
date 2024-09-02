@@ -90,7 +90,10 @@
             const modalContent = document.getElementById('modalContent');
 
             html2canvas(modalContent).then(canvas => {
+                // Используем Data URL для создания ссылки
                 const dataURL = canvas.toDataURL('image/png');
+                
+                // Создаем ссылку для скачивания
                 const a = document.createElement('a');
                 a.href = dataURL;
                 a.download = 'result.png';
