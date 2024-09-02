@@ -32,11 +32,10 @@
             <p id="modalCurrentPercentage"></p>
 
             <!-- Кнопка для скачивания изображения -->
-            <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
+            <button id="downloadBtn" onclick="downloadSVGImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -86,21 +85,26 @@
             }
         };
 
-        function downloadModalImage() {
+        function downloadSVGImage() {
             const modalContent = document.getElementById('modalContent');
-
-            html2canvas(modalContent).then(canvas => {
-                const dataURL = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.href = dataURL;
-                a.download = 'result.png';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }).catch(function(error) {
-                console.error('Ошибка при создании скриншота:', error);
-            });
+            
+            // Create SVG from HTML content
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${modalContent.offsetWidth}" height="${modalContent.offsetHeight}">
+                            <foreignObject width="100%" height="100%">
+                                ${modalContent.outerHTML}
+                            </foreignObject>
+                        </svg>`;
+            
+            const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'result.svg';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
