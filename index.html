@@ -88,33 +88,16 @@
 
         function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
-            const closeButton = document.querySelector('.close');
-            const downloadButton = document.getElementById('downloadBtn');
-
-            // Скрываем кнопки перед созданием изображения
-            closeButton.style.display = 'none';
-            downloadButton.style.display = 'none';
 
             html2canvas(modalContent).then(canvas => {
-                // Восстанавливаем кнопки после создания изображения
-                closeButton.style.display = 'block';
-                downloadButton.style.display = 'block';
-
-                canvas.toBlob(function(blob) {
-                    if (blob) {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'result.png';
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    } else {
-                        console.error('Ошибка при создании изображения');
-                    }
-                }, 'image/png');
+                const dataURL = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = dataURL;
+                a.download = 'result.png';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }).catch(function(error) {
                 console.error('Ошибка при создании скриншота:', error);
             });
