@@ -36,7 +36,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
@@ -88,22 +87,26 @@
 
         function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
 
-            domtoimage.toBlob(modalContent)
-                .then(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'result.png';
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                })
-                .catch(function(error) {
-                    console.error('Ошибка при создании скриншота:', error);
-                });
+            canvas.width = modalContent.offsetWidth;
+            canvas.height = modalContent.offsetHeight;
+
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            html2canvas(modalContent).then(function(canvas) {
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'result.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }).catch(function(error) {
+                console.error('Ошибка при создании скриншота:', error);
+            });
         }
     </script>
 </body>
