@@ -95,29 +95,23 @@
             closeButton.style.display = 'none';
             downloadButton.style.display = 'none';
 
-            // Изменяем фон модального окна
-            modalContent.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
-            modalContent.style.backgroundPosition = 'bottom';
-            modalContent.style.backgroundSize = 'cover';
-
-            html2canvas(modalContent, { useCORS: true }).then(canvas => {
-                // Восстанавливаем кнопки и фон после создания изображения
+            html2canvas(modalContent).then(canvas => {
+                // Восстанавливаем кнопки после создания изображения
                 closeButton.style.display = 'block';
                 downloadButton.style.display = 'block';
-                modalContent.style.backgroundImage = 'none';
 
                 canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'result.png';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 'image/png').catch(function(error) {
-                    console.error('Ошибка при создании изображения:', error);
-                });
+                    if (blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'result.png';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    } else {
+                        console.error('Ошибка при создании изображения');
+                    }
+                }, 'image/png');
             }).catch(function(error) {
                 console.error('Ошибка при создании скриншота:', error);
             });
