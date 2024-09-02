@@ -32,7 +32,7 @@
             <p id="modalCurrentPercentage"></p>
 
             <!-- Кнопка для скачивания изображения -->
-            <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
+            <button id="downloadBtn" onclick="downloadImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
@@ -85,28 +85,17 @@
             }
         };
 
-        function downloadModalImage() {
+        function downloadImage() {
             const modalContent = document.getElementById('modalContent');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            canvas.width = modalContent.offsetWidth;
-            canvas.height = modalContent.offsetHeight;
-
-            context.fillStyle = 'white';
-            context.fillRect(0, 0, canvas.width, canvas.height);
-
-            html2canvas(modalContent).then(function(canvas) {
-                const dataUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = dataUrl;
-                link.download = 'result.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }).catch(function(error) {
-                console.error('Ошибка при создании скриншота:', error);
-            });
+            const dataUrl = 'data:image/png;base64,' + btoa(
+                unescape(encodeURIComponent(modalContent.innerHTML))
+            );
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'result.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
