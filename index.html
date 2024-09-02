@@ -90,17 +90,17 @@
             const modalContent = document.getElementById('modalContent');
 
             html2canvas(modalContent).then(canvas => {
-                // Используем Data URL для создания ссылки
-                const dataURL = canvas.toDataURL('image/png');
-                
-                // Создаем ссылку для скачивания
-                const a = document.createElement('a');
-                a.href = dataURL;
-                a.download = 'result.png';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'result.png';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
             }).catch(function(error) {
                 console.error('Ошибка при создании скриншота:', error);
             });
