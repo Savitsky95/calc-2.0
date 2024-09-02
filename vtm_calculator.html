@@ -43,7 +43,7 @@
         }
 
         function formatCurrency(value) {
-            return value >= 1e6 ? (value / 1e6).toFixed(2) + 'M' : (value / 1e3).toFixed(2) + 'K';
+            return value.toFixed(2); // Убираем сокращения и отображаем полное значение с двумя знаками после запятой
         }
 
         function calculateVTM() {
