@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор виконання плану ТО</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -85,18 +84,25 @@
         function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
 
-            domtoimage.toBlob(modalContent)
-                .then(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'result.png';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                })
-                .catch(function(error) {
-                    console.error('Ошибка при создании скриншота:', error);
-                });
+            // Создаем canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Устанавливаем размеры canvas
+            canvas.width = modalContent.offsetWidth;
+            canvas.height = modalContent.offsetHeight;
+            
+            // Отрисовываем содержимое на canvas
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(modalContent, 0, 0);
+            
+            // Создаем ссылку для скачивания
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'result.png';
+            a.click();
         }
     </script>
 </body>
