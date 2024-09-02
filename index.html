@@ -15,10 +15,12 @@
             <label for="fact">Введіть факт (грн):</label>
             <input type="number" id="fact" placeholder="Факт" />
             <button onclick="calculateTO()" class="interactive">Розрахувати</button>
+            <!-- Кнопка перехода на калькулятор ВТМ -->
             <button onclick="window.location.href='vtm_calculator.html'" class="interactive">Перейти на калькулятор ВТМ</button>
         </div>
     </div>
 
+    <!-- Модальное окно для отображения результатов -->
     <div id="resultModal" class="modal">
         <div class="modal-content" id="modalContent">
             <span class="close">&times;</span>
@@ -28,17 +30,20 @@
             <p id="modalDaysWithToday"></p>
             <p id="modalDaysWithoutToday"></p>
             <p id="modalCurrentPercentage"></p>
+
+            <!-- Кнопка для скачивания изображения -->
             <button id="downloadBtn" onclick="downloadModalImage()" class="interactive">Завантажити зображення</button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <script>
         function safeDivide(numerator, denominator) {
             return denominator === 0 ? 0 : (numerator / denominator).toFixed(2);
         }
 
         function formatCurrency(value) {
-            return value.toFixed(2);
+            return value.toFixed(2); // Убираем сокращения и отображаем полное значение с двумя знаками после запятой
         }
 
         function calculateTO() {
@@ -84,25 +89,21 @@
         function downloadModalImage() {
             const modalContent = document.getElementById('modalContent');
 
-            // Создаем canvas
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // Устанавливаем размеры canvas
-            canvas.width = modalContent.offsetWidth;
-            canvas.height = modalContent.offsetHeight;
-            
-            // Отрисовываем содержимое на canvas
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(modalContent, 0, 0);
-            
-            // Создаем ссылку для скачивания
-            const url = canvas.toDataURL('image/png');
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'result.png';
-            a.click();
+            domtoimage.toBlob(modalContent)
+                .then(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'result.png';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(function(error) {
+                    console.error('Ошибка при создании скриншота:', error);
+                });
         }
     </script>
 </body>
