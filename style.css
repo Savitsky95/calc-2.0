@@ -98,13 +98,8 @@ input {
 }
 
 .modal-content {
-    /* Фонове зображення для модального вікна */
-    background-image: url('./images/modal-background.jpg'); /* Замініть шлях при необхідності */
-    background-size: cover; /* Масштабування зображення */
-    background-position: center; /* Позиціонування зображення */
-    background-repeat: no-repeat; /* Без повторення зображення */
-    
-    background-color: rgba(254, 254, 254, 0.9); /* Фоновий колір з прозорістю */
+    /* Фоновий колір з прозорістю */
+    background-color: rgba(254, 254, 254, 0.9); 
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -128,63 +123,6 @@ input {
     text-decoration: none;
     cursor: pointer;
 }
-
-/* Кнопки соціальних мереж (залишені для можливого подальшого використання) */
-/*
-.share-buttons {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.share-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px; / * Ширина кнопки */
-    height: 50px; / * Висота кнопки */
-    border-radius: 50%; /* Кругла форма */
-    background-color: #f1f1f1; /* Колір фону кнопки */
-    border: 2px solid #ddd; /* Колір межі кнопки */
-    overflow: hidden; /* Обрізка зображення по краям */
-    text-decoration: none; /* Видалити підкреслення */
-    transition: background-color 0.3s, border-color 0.3s; /* Плавний перехід при наведенні */
-}
-
-.share-btn img {
-    width: 30px; /* Ширина логотипу */
-    height: 30px; /* Висота логотипу */
-}
-
-.share-btn svg {
-    width: 24px; /* Ширина SVG */
-    height: 24px; /* Висота SVG */
-    fill: currentColor; /* Колір SVG буде збігатися з кольором тексту кнопки */
-}
-
-.viber {
-    background-color: #7F5EBE; /* Фон для Viber */
-}
-
-.viber:hover {
-    background-color: #6e4b9a; /* Темніший фон при наведенні */
-}
-
-.telegram {
-    background-color: #0088cc; /* Фон для Telegram */
-}
-
-.telegram:hover {
-    background-color: #0077b5; /* Темніший фон при наведенні */
-}
-
-.whatsapp {
-    background-color: #25D366; /* Фон для WhatsApp */
-}
-
-.whatsapp:hover {
-    background-color: #1ebf5a; /* Темніший фон при наведенні */
-}
-*/
 
 /* Медійні запити для адаптивності */
 @media (max-width: 768px) {
