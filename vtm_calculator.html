@@ -106,10 +106,16 @@
                 downloadButton.style.display = 'block';
                 modalContent.style.backgroundImage = 'none';
 
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = 'result.png';
-                link.click();
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'result.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
             });
         }
     </script>
